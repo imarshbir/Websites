@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oceanic Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        .inventory-card {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .result-item:hover {
+            background: #f1f5f9;
+        }
+        .wave-pattern {
+            background-color: #e0f2fe;
+            opacity: 0.8;
+            background-image: radial-gradient(#0ea5e9 0.8px, transparent 0.8px), radial-gradient(#0ea5e9 0.8px, #e0f2fe 0.8px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Header with wave pattern -->
+    <div class="wave-pattern py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold text-sky-900 mb-2">Oceanic Inventory</h1>
+            <p class="text-lg text-sky-700">Modern inventory management solution</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 -mt-8">
+        <div class="inventory-card rounded-xl p-8">
+            <h2 class="text-3xl font-semibold text-sky-900 mb-6">Inventory Management</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Add Item Form -->
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <h3 class="text-xl font-medium text-sky-800 mb-4">Add New Item</h3>
+                    <form id="addItemForm" class="space-y-4">
+                        <div>
+                            <label for="name" class="block text-sky-700 mb-1 font-medium">Item Name</label>
+                            <input type="text" id="name" name="name" required 
+                                   class="w-full px-4 py-2 rounded border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="price" class="block text-sky-700 mb-1 font-medium">Price ($)</label>
+                            <input type="number" step="0.01" id="price" name="price" required 
+                                   class="w-full px-4 py-2 rounded border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="expiry" class="block text-sky-700 mb-1 font-medium">Expiry Date</label>
+                            <input type="date" id="expiry" name="expiry" 
+                                   class="w-full px-4 py-2 rounded border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent">
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="in_stock" name="in_stock" 
+                                   class="h-5 w-5 text-sky-600 rounded border-sky-300 focus:ring-sky-500">
+                            <label for="in_stock" class="ml-2 text-sky-700 font-medium">Currently in stock</label>
+                        </div>
+                        
+                        <button type="submit" 
+                                class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded transition duration-300 flex items-center justify-center">
+                            <i class="fas fa-plus-circle mr-2"></i> Add to Inventory
+                        </button>
+                    </form>
+                    
+                    <div id="message" class="mt-4 hidden"></div>
+                </div>
+                
+                <!-- Search Section -->
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <h3 class="text-xl font-medium text-sky-800 mb-4">Search Inventory</h3>
+                    
+                    <form id="searchForm" class="mb-6">
+                        <div class="flex">
+                            <input type="text" id="searchQuery" placeholder="Search by item name..." 
+                                   class="flex-grow px-4 py-2 rounded-l border border-sky-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent">
+                            <button type="submit" 
+                                    class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-r transition duration-300">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center">
+                        <a href="/download" 
+                           class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-file-excel mr-2"></i> Download Excel
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-medium text-sky-800 mb-2">Quick Stats</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white p-3 rounded border border-sky-100 shadow-sm">
+                                <p class="text-sky-600 text-sm font-medium">Total Items</p>
+                                <p class="text-sky-900 text-xl font-bold" id="totalItems">Loading...</p>
+                            </div>
+                            <div class="bg-white p-3 rounded border border-sky-100 shadow-sm">
+                                <p class="text-sky-600 text-sm font-medium">In Stock</p>
+                                <p class="text-sky-900 text-xl font-bold" id="inStockItems">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Results Section -->
+            <div id="searchResults" class="mt-12 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-semibold text-sky-900">Search Results</h3>
+                    <button onclick="hideResults()" class="text-sky-600 hover:text-sky-800 transition duration-300">
+                        <i class="fas fa-times mr-1"></i> Close
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg overflow-hidden border border-sky-100">
+                        <thead class="bg-sky-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Expiry</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-sky-700 uppercase tracking-wider">Added</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTable" class="divide-y divide-sky-100">
+                            <!-- Results will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-16 text-center text-sky-600 py-6 bg-sky-50">
+        <p>© 2023 Oceanic Inventory. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        document.getElementById('addItemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const response = await fetch('/add_item', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+            
+            messageDiv.className = result.success ? 'p-4 bg-emerald-100 text-emerald-800 rounded border border-emerald-200' : 'p-4 bg-red-100 text-red-800 rounded border border-red-200';
+            messageDiv.textContent = result.message;
+            messageDiv.classList.remove('hidden');
+            
+            if (result.success) {
+                e.target.reset();
+                updateStats();
+                setTimeout(() => messageDiv.classList.add('hidden'), 3000);
+            }
+        });
+        
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchQuery').value;
+            
+            const response = await fetch(`/search?query=${encodeURIComponent(query)}`);
+            const results = await response.json();
+            
+            const resultsTable = document.getElementById('resultsTable');
+            resultsTable.innerHTML = '';
+            
+            if (results.length === 0) {
+                resultsTable.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No items found</td></tr>';
+            } else {
+                results.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = 'result-item';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap font-medium">${item.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">$${item.price.toFixed(2)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.expiry || 'N/A'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 rounded-full text-xs ${item.in_stock === 'Yes' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                                ${item.in_stock}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">${item.date_added}</td>
+                    `;
+                    resultsTable.appendChild(row);
+                });
+            }
+            
+            document.getElementById('searchResults').classList.remove('hidden');
+        });
+        
+        function hideResults() {
+            document.getElementById('searchResults').classList.add('hidden');
+        }
+        
+        async function updateStats() {
+            const response = await fetch('/search?query=');
+            const results = await response.json();
+            
+            document.getElementById('totalItems').textContent = results.length;
+            document.getElementById('inStockItems').textContent = results.filter(item => item.in_stock === 'Yes').length;
+        }
+        
+        // Initialize stats on page load
+        updateStats();
+    </script>
+</body>
+</html>
