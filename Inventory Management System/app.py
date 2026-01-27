@@ -6,7 +6,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-MONGO_URI = "mongodb+srv://arshbir:arshbir123@arshbir.9pulohe.mongodb.net/?retryWrites=true&w=majority&appName=arshbir"
+MONGO_URI = "--------------Add database  link--------------------------------"
 client = MongoClient(MONGO_URI)
 
 db = client["arshdb"]
