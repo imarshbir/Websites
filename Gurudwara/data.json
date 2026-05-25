@@ -1,0 +1,28 @@
+{
+  "2026": {
+    "Day 1": [
+      {
+        "url": "https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=80&w=1200&auto=format&fit=crop",
+        "caption": "Golden Temple (Harmandir Sahib) illuminated at evening"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=1200&auto=format&fit=crop",
+        "caption": "Devotees gather for the evening prayers"
+      }
+    ],
+    "Day 2": [
+      {
+        "url": "https://images.unsplash.com/photo-1587560699334-cc4ff634909a?q=80&w=1200&auto=format&fit=crop",
+        "caption": "Prakash Purab celebrations with lights and fireworks"
+      }
+    ]
+  },
+  "2025": {
+    "Day 1": [
+      {
+        "url": "https://images.unsplash.com/photo-1620121692029-d088224ddc74?q=80&w=1200&auto=format&fit=crop",
+        "caption": "Kirtan Darbar during the Annual Samagam"
+      }
+    ]
+  }
+}
